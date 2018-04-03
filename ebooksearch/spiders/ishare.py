@@ -2,6 +2,7 @@
 import scrapy
 from urllib import parse
 import re
+import time
 
 from scrapy.loader import ItemLoader
 
@@ -32,7 +33,7 @@ class IshareSpider(scrapy.Spider):
                 # yield scrapy.Request(url=url, headers=self.headers, callback=self.parse)
 
     def category_parse(self, response):
-        # 没有这个轮播图的才是真正要爬取的页面
+        # 没有这个轮播图的才是真正要爬取的分类页面
         if "education-banner" not in response.text:
             all_urls = response.css("::attr(href)").extract(); # 拿到类别页中所有的url
             all_urls = [parse.urljoin(response.url, url) for url in all_urls]  # 为url添加域名
@@ -45,7 +46,29 @@ class IshareSpider(scrapy.Spider):
                     request_id = match_obj.group(2)
                     yield scrapy.Request(url=url, headers=self.headers, callback=self.detail_parse)
 
+            # 下一页的url
+            next_url = response.css(".btn-page::attr(href)").extract()
+            if next_url:
+                next_url = parse.urljoin(response.url, next_url)
+                # yield scrapy.Request(url=next_url, headers=self.headers, callback=self.category_parse)
+                pass
 
     def detail_parse(self, response):
         # 资料详情提取
-        pass
+        item_loader = ItemLoader(item=IshareItem, response=response)
+
+        item_loader.add_css("title", ".detail-box h1::text")
+        item_loader.add_css("upload_people", ".detail-user-bar .span a::text")
+        item_loader.add_css("score", "#starScoreId::text")
+        item_loader.add_css("load_num", "#downNumId::text")
+        item_loader.add_css("comment_num", "#commentNumId::text")
+        item_loader.add_css("collect_num", "#collectNumId::text")
+        item_loader.add_css("read_num", "#readNumId::text")
+        item_loader.add_xpath("upload_time", "//*[@id='swfPreview']/div/div[1]/div[1]/span[3]/text()")
+        # item_loader.add_value("crawl_time", round(time.time() * 1000))
+        item_loader.add_value("url", response.url)
+        # item_loader.add_value("source_website", self.allowed_domains)
+
+        ishare_item = item_loader.load_item()
+
+        yield ishare_item

@@ -28,4 +28,6 @@ class IshareItem(scrapy.Item):
     source_website = scrapy.Field()
     type = scrapy.Field()
     size = scrapy.Field()
-
+    comment_num = scrapy.Field()
+    read_num = scrapy.Field()
+    collect_num = scrapy.Field()
