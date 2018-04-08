@@ -4,6 +4,8 @@ from urllib import parse
 import re
 import time
 
+from ebooksearch.utils import common
+
 from scrapy.loader import ItemLoader
 
 from ebooksearch.items import IshareItem
@@ -26,7 +28,8 @@ class IshareSpider(scrapy.Spider):
             match_obj = re.match(r'(.*iask.sina.com.cn/c/(\d+).html$)', url) # 匹配资料url
             if match_obj:
                 # 如果匹配到url，进行详情页提取
-                yield scrapy.Request(url=url, headers=self.headers, callback=self.category_parse)
+                yield scrapy.Request(url=url, callback=self.category_parse)
+                # yield scrapy.Request(url=url, headers=self.headers, callback=self.category_parse)
             else:
                 pass
                 #匹配不到，继续跟踪
@@ -44,18 +47,19 @@ class IshareSpider(scrapy.Spider):
                     # 如果匹配到的url不为空，提取详情
                     request_url = match_obj.group(1)
                     request_id = match_obj.group(2)
-                    yield scrapy.Request(url=url, headers=self.headers, callback=self.detail_parse)
+                    yield scrapy.Request(url=url, callback=self.detail_parse)
+                    # yield scrapy.Request(url=url, headers=self.headers, callback=self.detail_parse)
 
             # 下一页的url
-            next_url = response.css(".btn-page::attr(href)").extract()
-            if next_url:
-                next_url = parse.urljoin(response.url, next_url)
-                # yield scrapy.Request(url=next_url, headers=self.headers, callback=self.category_parse)
-                pass
+            # next_url = response.css(".btn-page::attr(href)").extract()
+            # if next_url:
+            #     next_url = parse.urljoin(response.url, next_url)
+            #     # yield scrapy.Request(url=next_url, headers=self.headers, callback=self.category_parse)
+            #     pass
 
     def detail_parse(self, response):
         # 资料详情提取
-        item_loader = ItemLoader(item=IshareItem, response=response)
+        item_loader = ItemLoader(item=IshareItem(), response=response)
 
         item_loader.add_css("title", ".detail-box h1::text")
         item_loader.add_css("upload_people", ".detail-user-bar .span a::text")
@@ -65,9 +69,11 @@ class IshareSpider(scrapy.Spider):
         item_loader.add_css("collect_num", "#collectNumId::text")
         item_loader.add_css("read_num", "#readNumId::text")
         item_loader.add_xpath("upload_time", "//*[@id='swfPreview']/div/div[1]/div[1]/span[3]/text()")
-        # item_loader.add_value("crawl_time", round(time.time() * 1000))
+        item_loader.add_value("crawl_time", round(time.time() * 1000))
         item_loader.add_value("url", response.url)
-        # item_loader.add_value("source_website", self.allowed_domains)
+        item_loader.add_value("url_obj_id", common.get_md5(response.url))
+        item_loader.add_value("source_website", self.allowed_domains)
+        item_loader.add_value("type", ".detail-box h1::text")
 
         ishare_item = item_loader.load_item()
 

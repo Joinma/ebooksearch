@@ -7,6 +7,9 @@
 
 from scrapy import signals
 
+from fake_useragent import UserAgent
+from ebooksearch.tools.xici_proxy_ip import GetIP
+
 
 class EbooksearchSpiderMiddleware(object):
     # Not all methods need to be defined. If a method is not defined,
@@ -101,3 +104,28 @@ class EbooksearchDownloaderMiddleware(object):
 
     def spider_opened(self, spider):
         spider.logger.info('Spider opened: %s' % spider.name)
+
+
+class RandomUserAgentMiddleware(object):
+    # 随机更换User_Agent
+    def __init__(self, crawler):
+        super(RandomUserAgentMiddleware, self).__init__()
+        self.ua = UserAgent()
+        self.ua_type = crawler.settings.get('RANDOM_UA_TYPE', 'random')  # 默认值为 random
+
+    @classmethod
+    def from_crawler(cls, crawler):
+        return cls(crawler)
+
+    def process_request(self, request, spider):
+        def get_ua():
+            return getattr(self.ua, self.ua_type)
+
+        random_ua = get_ua()
+        request.headers.setdefault('User-Agent', get_ua())
+
+class RandomProxyMiddleware(object):
+    # 动态设置ip代理
+    def process_request(self, request, spider):
+        get_ip = GetIP()
+        request.meta["proxy"] = get_ip.get_random_ip()
