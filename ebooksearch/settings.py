@@ -57,7 +57,7 @@ DOWNLOADER_MIDDLEWARES = {
    'scrapy.downloadermiddlewares.useragent.UserAgentMiddleware': None,
    'ebooksearch.middlewares.RandomUserAgentMiddleware': 543,
    # 随机更换西刺ip代理池中ip的中间件,但是自己的ip才是最快的
-   'ebooksearch.middlewares.RandomProxyMiddleware': 2,
+   # 'ebooksearch.middlewares.RandomProxyMiddleware': 2,
 }
 
 # Enable or disable extensions
@@ -69,7 +69,7 @@ DOWNLOADER_MIDDLEWARES = {
 # Configure item pipelines
 # See https://doc.scrapy.org/en/latest/topics/item-pipeline.html
 ITEM_PIPELINES = {
-   'ebooksearch.pipelines.EbooksearchPipeline': 300,
+   'ebooksearch.pipelines.MysqlTwistedPipeline': 300,
 }
 
 # Enable and configure the AutoThrottle extension (disabled by default)
