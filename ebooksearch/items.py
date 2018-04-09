@@ -10,6 +10,7 @@ from scrapy.loader import ItemLoader
 from scrapy.loader.processors import MapCompose, TakeFirst, Join
 from scrapy.loader.processors import MapCompose, TakeFirst, Join
 from scrapy.loader import ItemLoader
+import re
 
 
 class EbooksearchItem(scrapy.Item):
@@ -40,3 +41,20 @@ class IshareItem(scrapy.Item):
     comment_num = scrapy.Field()
     read_num = scrapy.Field()
     collect_num = scrapy.Field()
+
+
+
+class PipipanItemLoader(ItemLoader):
+    # 自定义ItemLoader
+    default_output_processor = TakeFirst()
+
+class PipipanItem(scrapy.Item):
+    url_obj_id = scrapy.Field()
+    title = scrapy.Field()
+    read_num = scrapy.Field()
+    upload_time = scrapy.Field()
+    crawl_time = scrapy.Field()
+    url = scrapy.Field()
+    source_website = scrapy.Field()
+    type = scrapy.Field()
+    size = scrapy.Field()
