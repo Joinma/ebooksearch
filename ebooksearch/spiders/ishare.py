@@ -3,12 +3,10 @@ import scrapy
 from urllib import parse
 import re
 import time
-
-from ebooksearch.utils import common
-
 from scrapy.loader import ItemLoader
 
-from ebooksearch.items import IshareItem
+from ebooksearch.utils import common
+from ebooksearch.items import IshareItem, IshareItemLoader
 
 
 class IshareSpider(scrapy.Spider):
@@ -59,7 +57,7 @@ class IshareSpider(scrapy.Spider):
 
     def detail_parse(self, response):
         # 资料详情提取
-        item_loader = ItemLoader(item=IshareItem(), response=response)
+        item_loader = IshareItemLoader(item=IshareItem(), response=response)
 
         item_loader.add_css("title", ".detail-box h1::text")
         item_loader.add_css("upload_people", ".detail-user-bar .span a::text")
@@ -73,7 +71,7 @@ class IshareSpider(scrapy.Spider):
         item_loader.add_value("url", response.url)
         item_loader.add_value("url_obj_id", common.get_md5(response.url))
         item_loader.add_value("source_website", self.allowed_domains)
-        item_loader.add_value("type", ".detail-box h1::text")
+        item_loader.add_css("type", ".detail-box h1::text")
 
         ishare_item = item_loader.load_item()
 
