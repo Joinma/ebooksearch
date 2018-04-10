@@ -94,7 +94,7 @@ AUTOTHROTTLE_ENABLED = True
 #HTTPCACHE_STORAGE = 'scrapy.extensions.httpcache.FilesystemCacheStorage'
 
 MYSQL_HOST="localhost"
-MYSQL_DBNAME="article_spider"
+MYSQL_DBNAME="ebooksearch"
 MYSQL_USER="root"
 MYSQL_PASSWORK="root"
 RANDOM_UA_TYPE = "random"
