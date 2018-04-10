@@ -29,8 +29,10 @@ CREATE TABLE IF NOT EXISTS `pipipan` (
   `crawl_time` BIGINT NOT NULL DEFAULT 0 COMMENT '爬取时间',
   `url` VARCHAR(255) NOT NULL DEFAULT '' COMMENT '跳转链接',
   `source_website` VARCHAR(255) DEFAULT '' COMMENT '来源网站',
-  `type` INT(2) NOT NULL DEFAULT 0 COMMENT '文件类型，0 pdf 1 epub 2 mobi 3 doc 4 txt',
+  `type` VARCHAR(5) NOT NULL DEFAULT 0 COMMENT '文件类型',
   `size` DECIMAL(5, 2) NOT NULL DEFAULT 0.00 COMMENT '文件大小',
+  `tag` VARCHAR(255) NOT NULL DEFAULT'' COMMENT '标签',
+  `description` LONGTEXT COMMENT '资源内容介绍',
   
   PRIMARY KEY (`url_obj_id`)
 )ENGINE = InnoDB CHARACTER SET = utf8 COMMENT '城通网盘';

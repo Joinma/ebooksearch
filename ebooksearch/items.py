@@ -6,13 +6,14 @@
 # https://doc.scrapy.org/en/latest/topics/items.html
 
 import scrapy
-from scrapy.loader import ItemLoader
-from scrapy.loader.processors import MapCompose, TakeFirst, Join
 from scrapy.loader.processors import MapCompose, TakeFirst, Join
 from scrapy.loader import ItemLoader
-import re
 import time
 from decimal import *
+from w3lib.html import remove_tags
+import re
+
+from ebooksearch.utils.common import get_md5
 
 
 class EbooksearchItem(scrapy.Item):
@@ -22,7 +23,7 @@ class EbooksearchItem(scrapy.Item):
 
 
 class IshareItemLoader(ItemLoader):
-    # 自定义ItemLoader
+    # 自定义新浪爱问分享的ItemLoader
     default_output_processor = TakeFirst()
 
 
@@ -43,7 +44,6 @@ class IshareItem(scrapy.Item):
     comment_num = scrapy.Field()
     read_num = scrapy.Field()
     collect_num = scrapy.Field()
-
 
     def get_insert_sql(self):
         insert_sql = """
@@ -69,3 +69,53 @@ class IshareItem(scrapy.Item):
                   type)
 
         return insert_sql, params
+
+class PipipanItemLoader(ItemLoader):
+    # 自定义城通网盘的ItemLoader
+    default_output_processor = TakeFirst
+
+def format_upload_time(value):
+    # 处理上传时间
+    match_obj2 = re.match(r'(\d+)小时.*', value)
+    match_obj1 = re.match(r'(^昨天((\d+):(\d+)))', value)
+    match_obj3 = re.match(r'(^前天((\d+):(\d+)))', value)
+    match_obj4 = re.match(r'(\d+)天前.*', value)
+    match_obj5 = re.match(r'\d+-\d+-\d+', value)
+    
+    if match_obj1:
+        pass
+    elif match_obj5:
+        upload_time = time.strptime(value, "%Y-%m-%d")
+        return round(time.mktime(upload_time) * 1000)
+
+
+# 城通网盘
+class PipipanItem(scrapy.Item):
+    url_obj_id = scrapy.Field(
+        input_processor = MapCompose(get_md5)
+    )
+    title = scrapy.Field()
+    read_num = scrapy.Field()
+    upload_time = scrapy.Field()
+    crawl_time = scrapy.Field()
+    url = scrapy.Field()
+    source_website = scrapy.Field()
+    type = scrapy.Field()
+    size = scrapy.Field(
+        input_processor=MapCompose(remove_tags)
+    )
+    tag = scrapy.Field(
+        input_processor=Join(",")
+    )
+    description = scrapy.Field()
+
+
+    def get_insert_sql(self):
+        insert_sql = """
+            insert into `pipipan` (url_obj_id, title, read_num, upload_time, crawl_time, 
+            url, source_website, type, size, tag, description) 
+              VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s) 
+              ON DUPLICATE KEY UPDATE title=VALUES(title),read_num=VALUES(read_num),
+              crawl_time=VALUES(crawl_time), tag=values(tag)
+        """
+

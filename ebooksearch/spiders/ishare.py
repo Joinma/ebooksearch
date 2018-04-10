@@ -3,11 +3,9 @@ import scrapy
 from urllib import parse
 import re
 import time
-
-from ebooksearch.utils import common
-
 from scrapy.loader import ItemLoader
 
+from ebooksearch.utils import common
 from ebooksearch.items import IshareItem, IshareItemLoader
 
 
