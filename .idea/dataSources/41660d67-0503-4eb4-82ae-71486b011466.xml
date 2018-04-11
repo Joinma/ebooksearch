@@ -1009,7 +1009,7 @@
     <column id="234" parent="208" name="size">
       <Position>9</Position>
       <Comment>文件大小</Comment>
-      <DataType>decimal(5,2)|0</DataType>
+      <DataType>varchar(20)|0</DataType>
       <NotNull>1</NotNull>
       <DefaultExpression>&apos;0.00&apos;</DefaultExpression>
       <ColumnKind>normal</ColumnKind>

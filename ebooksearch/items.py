@@ -70,9 +70,11 @@ class IshareItem(scrapy.Item):
 
         return insert_sql, params
 
+
 class PipipanItemLoader(ItemLoader):
     # 自定义城通网盘的ItemLoader
-    default_output_processor = TakeFirst
+    default_output_processor = TakeFirst()
+
 
 def format_upload_time(value):
     # 处理上传时间
@@ -84,6 +86,7 @@ def format_upload_time(value):
     
     if match_obj1:
         upload_time = match_obj1.group(1) * 3600000
+        return upload_time
     elif match_obj2:
         hour = match_obj2.group(2)
         minute = match_obj2.group(3)
@@ -92,43 +95,80 @@ def format_upload_time(value):
         today_timestamp = int(time.mktime(today.timetuple()))
         yestoday_timestamp = today_timestamp - 3600000 * 24
         upload_time = yestoday_timestamp + hour * 3600000 + minute * 60000
+        return upload_time
     elif match_obj4:
         upload_time = match_obj4.group(1) * 3600000 * 24
+        return upload_time
     elif match_obj5:
         upload_time = time.strptime(value, "%Y-%m-%d")
         return round(time.mktime(upload_time) * 1000)
+    else:
+        return round(time.time() * 1000)
+
+
+def get_size(value):
+    size = value.replace("\r", "").replace("\n", "").replace("\t", "")
+    return size
+
+
+def get_type(value):
+    match_obj = re.match(".*\.(.*)", value)
+    if match_obj:
+        type = match_obj.group(1)
+    else:
+        type = "unknown"
+    return type
 
 
 # 城通网盘
 class PipipanItem(scrapy.Item):
-    url_obj_id = scrapy.Field(
-        input_processor = MapCompose(get_md5)
-    )
+    url_obj_id = scrapy.Field()
     title = scrapy.Field()
     read_num = scrapy.Field()
-    upload_time = scrapy.Field()
+    upload_time = scrapy.Field(
+        input_processor = MapCompose(format_upload_time)
+    )
     crawl_time = scrapy.Field()
     url = scrapy.Field()
     source_website = scrapy.Field()
-    type = scrapy.Field()
+    type = scrapy.Field(
+        input_processor=MapCompose(get_type)
+    )
     size = scrapy.Field(
-        input_processor=MapCompose(remove_tags)
+        input_processor=MapCompose(get_size)
     )
     tag = scrapy.Field(
         input_processor=Join(",")
     )
-    description = scrapy.Field()
+    description = scrapy.Field(
+        input_processor=MapCompose(remove_tags)
+    )
 
     def get_insert_sql(self):
-        insert_sql = """
-            insert into `pipipan` (url_obj_id, title, read_num, upload_time, crawl_time, 
-            url, source_website, type, size, tag, description) 
-              VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s) 
-              ON DUPLICATE KEY UPDATE title=VALUES(title),read_num=VALUES(read_num),
-              crawl_time=VALUES(crawl_time), tag=values(tag)
-        """
 
-        params = (self["url_obj_id"], self["title"], self["read_num"], self["upload_time"], self["crawl_time"],
-                  self["url"], self["source_website"], self["type"], self["size"], self["tag"], self["description"])
+        description = self["description"]
+        if description:
+            print("description: " + description)
+            insert_sql = """
+                insert into `pipipan` (url_obj_id, title, read_num, upload_time, crawl_time, 
+                url, source_website, type, size, tag, description) 
+                  VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s) 
+                  ON DUPLICATE KEY UPDATE title=VALUES(title),read_num=VALUES(read_num),
+                  crawl_time=VALUES(crawl_time), tag=values(tag)
+            """
+
+            params = (self["url_obj_id"], self["title"], self["read_num"], self["upload_time"], self["crawl_time"],
+                      self["url"], self["source_website"], self["type"], self["size"], self["tag"], self["description"])
+        else:
+            insert_sql = """
+                            insert into `pipipan` (url_obj_id, title, read_num, upload_time, crawl_time, 
+                            url, source_website, type, size, tag) 
+                              VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s) 
+                              ON DUPLICATE KEY UPDATE title=VALUES(title),read_num=VALUES(read_num),
+                              crawl_time=VALUES(crawl_time), tag=values(tag)
+                        """
+
+            params = (self["url_obj_id"], self["title"], self["read_num"], self["upload_time"], self["crawl_time"],
+                      self["url"], self["source_website"], self["type"], self["size"], self["tag"])
 
         return insert_sql, params

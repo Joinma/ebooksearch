@@ -27,7 +27,6 @@ class IshareSpider(scrapy.Spider):
             if match_obj:
                 # 如果匹配到url，进行详情页提取
                 yield scrapy.Request(url=url, callback=self.category_parse)
-                # yield scrapy.Request(url=url, headers=self.headers, callback=self.category_parse)
             else:
                 pass
                 #匹配不到，继续跟踪
@@ -38,7 +37,6 @@ class IshareSpider(scrapy.Spider):
         if "education-banner" not in response.text:
             all_urls = response.css("::attr(href)").extract(); # 拿到类别页中所有的url
             all_urls = [parse.urljoin(response.url, url) for url in all_urls]  # 为url添加域名
-            # http: // ishare.iask.sina.com.cn / f / j63XA46zwy.html
             for url in all_urls:
                 match_obj = re.match(r'(.*/f/(\d+).html$)', url)  # 详情页url
                 if match_obj:
@@ -46,13 +44,12 @@ class IshareSpider(scrapy.Spider):
                     request_url = match_obj.group(1)
                     request_id = match_obj.group(2)
                     yield scrapy.Request(url=url, callback=self.detail_parse)
-                    # yield scrapy.Request(url=url, headers=self.headers, callback=self.detail_parse)
 
             # 下一页的url
             next_url = response.css(".btn-page::attr(href)").extract()
             if next_url:
                 next_url = parse.urljoin(response.url, next_url)
-                yield scrapy.Request(url=next_url, headers=self.headers, callback=self.category_parse)
+                yield scrapy.Request(url=next_url, callback=self.category_parse)
 
     def detail_parse(self, response):
         # 资料详情提取

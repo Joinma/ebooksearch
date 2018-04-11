@@ -11,32 +11,36 @@ class PipipanSpider(scrapy.Spider):
     name = 'pipipan'
     allowed_domains = ['edu.pipipan.com']
     start_urls = ['http://edu.pipipan.com/']
-    # start_urls = ['http://edu.pipipan.com/class/2011?pg=7']
-    headers = {
-        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko)Chrome/63.0.3239.84 Safari/537.36'
-    }
 
     def parse(self, response):
         # 解析分类
         all_category_url = response.css(".sub-nav a::attr(href)").extract()
         all_category_url = [parse.urljoin(response.url, url) for url in all_category_url]
-        print(all_category_url)
         for category_url in all_category_url:
-            print(category_url)
-            scrapy.Request(category_url, callback=self.parse_category_detail)
+            yield scrapy.Request(url=category_url, callback=self.parse_category_detail)
 
     def parse_category_detail(self, response):
         # 分类详情
         all_category_detail_url = response.css(".sub-nav a::attr(href)").extract()
         all_category_detail_url = [parse.urljoin(response.url, url) for url in all_category_detail_url]
         for category_detail_url in all_category_detail_url:
-            scrapy.Request(category_detail_url, callback=self.parse_detail)
+            yield scrapy.Request(category_detail_url, callback=self.parse_book_list)
 
-    def parse_detail(self, response):
+    def parse_book_list(self, response):
+        # 分类详情下的书籍列表
+        book_list = response.css("#resource-list a::attr(href)").extract()
+        book_list = [parse.urljoin(response.url, url) for url in book_list]
+        for book_detail_url in book_list:
+            yield scrapy.Request(book_detail_url, callback=self.parse_book_detail)
+
+    def parse_book_detail(self, response):
+        if "未找到" in response.text:
+            return
+
         # 提取书籍信息
         item_loader = PipipanItemLoader(item=PipipanItem(), response=response)
 
-        item_loader.add_value("url_obj_id", response.url)
+        item_loader.add_value("url_obj_id", common.get_md5(response.url))
         item_loader.add_css("title", ".view_title h3::text")
         item_loader.add_xpath("read_num", '//*[@id="main-container"]/div/div/div/div[2]/div[2]/div/div[6]/span/text()')
         item_loader.add_xpath("upload_time", '//*[@id="main-container"]/div/div/div/div[2]/div[2]/div/div[4]/span/text()')
