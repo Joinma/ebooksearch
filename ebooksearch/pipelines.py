@@ -43,6 +43,7 @@ class MysqlTwistedPipeline(object):
         # 进行具体的数据插入操作 根据不同的item 构建不同的sql语句并插入到mysql中
         insert_sql, params = item.get_insert_sql()
         print(insert_sql)
+        print(params)
         cursor.execute(insert_sql, params)
 
     def handle_error(self, failure, item, spider):

@@ -55,7 +55,7 @@ class IshareSpider(scrapy.Spider):
 
     def detail_parse(self, response):
         # 资料详情提取
-        item_loader = ItemLoader(item=IshareItem(), response=response)
+        item_loader = IshareItemLoader(item=IshareItem(), response=response)
 
         item_loader.add_css("title", ".detail-box h1::text")
         item_loader.add_css("upload_people", ".detail-user-bar a::text")
