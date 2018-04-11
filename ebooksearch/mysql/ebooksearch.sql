@@ -14,7 +14,7 @@ CREATE TABLE IF NOT EXISTS `ishare`(
   `url` VARCHAR(255) NOT NULL DEFAULT '' COMMENT '资料链接',
   `source_website` VARCHAR(255) DEFAULT '' COMMENT '来源网站',
   `type` VARCHAR(5) NOT NULL DEFAULT 0 COMMENT '文件类型',
-  `size` DECIMAL(5, 2) NOT NULL DEFAULT 0.00 COMMENT '文件大小',
+  `size` DECIMAL(5, 2) DEFAULT 0.00 COMMENT '文件大小',
 
   PRIMARY KEY (`url_obj_id`)
 )ENGINE = InnoDB CHARACTER SET = utf8 COMMENT '新浪爱问分享资料';
@@ -36,6 +36,23 @@ CREATE TABLE IF NOT EXISTS `pipipan` (
   
   PRIMARY KEY (`url_obj_id`)
 )ENGINE = InnoDB CHARACTER SET = utf8 COMMENT '城通网盘';
+
+-- 我的小书屋
+DROP TABLE IF EXISTS `mebook`;
+CREATE TABLE IF NOT EXISTS `mebook` (
+  `url_obj_id` VARCHAR(100) NOT NULL UNIQUE COMMENT 'md5加密后的url',
+  `title` VARCHAR(255) NOT NULL DEFAULT '' COMMENT '标题',
+  `upload_time` BIGINT NOT NULL DEFAULT 0 COMMENT '上传时间',
+  `crawl_time` BIGINT NOT NULL DEFAULT 0 COMMENT '爬取时间',
+  `url` VARCHAR(255) NOT NULL DEFAULT '' COMMENT '跳转链接',
+  `source_website` VARCHAR(255) DEFAULT '' COMMENT '来源网站',
+  `type` VARCHAR(5) NOT NULL DEFAULT 0 COMMENT '文件类型',
+  `description` LONGTEXT NULL COMMENT '资源内容介绍',
+  `tag` VARCHAR(255) NOT NULL DEFAULT'' COMMENT '标签',
+  `size` VARCHAR(20) DEFAULT 0.00 COMMENT '文件大小',
+
+  PRIMARY KEY (`url_obj_id`)
+)ENGINE = InnoDB CHARACTER SET = utf8 COMMENT '我的小书屋';
 
 -- 西刺动态代理ip
 DROP TABLE IF EXISTS `xici_ip`;

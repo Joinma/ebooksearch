@@ -822,18 +822,22 @@
       <Comment>新浪爱问分享资料</Comment>
       <Engine>InnoDB</Engine>
     </table>
-    <table id="208" parent="3" name="pipipan">
+    <table id="208" parent="3" name="mebook">
+      <Comment>我的小书屋</Comment>
+      <Engine>InnoDB</Engine>
+    </table>
+    <table id="209" parent="3" name="pipipan">
       <Comment>城通网盘</Comment>
       <Engine>InnoDB</Engine>
     </table>
-    <column id="209" parent="207" name="url_obj_id">
+    <column id="210" parent="207" name="url_obj_id">
       <Position>1</Position>
       <Comment>md5加密后的url</Comment>
       <DataType>varchar(100)|0</DataType>
       <NotNull>1</NotNull>
       <ColumnKind>normal</ColumnKind>
     </column>
-    <column id="210" parent="207" name="title">
+    <column id="211" parent="207" name="title">
       <Position>2</Position>
       <Comment>标题</Comment>
       <DataType>varchar(255)|0</DataType>
@@ -841,22 +845,22 @@
       <DefaultExpression>&apos;&apos;</DefaultExpression>
       <ColumnKind>normal</ColumnKind>
     </column>
-    <column id="211" parent="207" name="upload_people">
+    <column id="212" parent="207" name="upload_people">
       <Position>3</Position>
       <Comment>上传者</Comment>
       <DataType>varchar(255)|0</DataType>
       <DefaultExpression>&apos;&apos;</DefaultExpression>
       <ColumnKind>normal</ColumnKind>
     </column>
-    <column id="212" parent="207" name="score">
+    <column id="213" parent="207" name="score">
       <Position>4</Position>
       <Comment>评分</Comment>
-      <DataType>int(3)|0</DataType>
+      <DataType>decimal(2,1)|0</DataType>
       <NotNull>1</NotNull>
-      <DefaultExpression>&apos;0&apos;</DefaultExpression>
+      <DefaultExpression>&apos;0.0&apos;</DefaultExpression>
       <ColumnKind>normal</ColumnKind>
     </column>
-    <column id="213" parent="207" name="load_num">
+    <column id="214" parent="207" name="load_num">
       <Position>5</Position>
       <Comment>下载次数</Comment>
       <DataType>int(10)|0</DataType>
@@ -864,28 +868,28 @@
       <DefaultExpression>&apos;0&apos;</DefaultExpression>
       <ColumnKind>normal</ColumnKind>
     </column>
-    <column id="214" parent="207" name="read_num">
+    <column id="215" parent="207" name="read_num">
       <Position>6</Position>
       <Comment>查看人数</Comment>
       <DataType>int(10)|0</DataType>
       <DefaultExpression>&apos;0&apos;</DefaultExpression>
       <ColumnKind>normal</ColumnKind>
     </column>
-    <column id="215" parent="207" name="comment_num">
+    <column id="216" parent="207" name="comment_num">
       <Position>7</Position>
       <Comment>评论数</Comment>
       <DataType>int(10)|0</DataType>
       <DefaultExpression>&apos;0&apos;</DefaultExpression>
       <ColumnKind>normal</ColumnKind>
     </column>
-    <column id="216" parent="207" name="collect_num">
+    <column id="217" parent="207" name="collect_num">
       <Position>8</Position>
       <Comment>收藏数</Comment>
       <DataType>int(10)|0</DataType>
       <DefaultExpression>&apos;0&apos;</DefaultExpression>
       <ColumnKind>normal</ColumnKind>
     </column>
-    <column id="217" parent="207" name="upload_time">
+    <column id="218" parent="207" name="upload_time">
       <Position>9</Position>
       <Comment>上传时间</Comment>
       <DataType>bigint(20)|0</DataType>
@@ -893,7 +897,7 @@
       <DefaultExpression>&apos;0&apos;</DefaultExpression>
       <ColumnKind>normal</ColumnKind>
     </column>
-    <column id="218" parent="207" name="crawl_time">
+    <column id="219" parent="207" name="crawl_time">
       <Position>10</Position>
       <Comment>爬取时间</Comment>
       <DataType>bigint(20)|0</DataType>
@@ -901,7 +905,7 @@
       <DefaultExpression>&apos;0&apos;</DefaultExpression>
       <ColumnKind>normal</ColumnKind>
     </column>
-    <column id="219" parent="207" name="url">
+    <column id="220" parent="207" name="url">
       <Position>11</Position>
       <Comment>资料链接</Comment>
       <DataType>varchar(255)|0</DataType>
@@ -909,50 +913,49 @@
       <DefaultExpression>&apos;&apos;</DefaultExpression>
       <ColumnKind>normal</ColumnKind>
     </column>
-    <column id="220" parent="207" name="source_website">
+    <column id="221" parent="207" name="source_website">
       <Position>12</Position>
       <Comment>来源网站</Comment>
       <DataType>varchar(255)|0</DataType>
       <DefaultExpression>&apos;&apos;</DefaultExpression>
       <ColumnKind>normal</ColumnKind>
     </column>
-    <column id="221" parent="207" name="type">
+    <column id="222" parent="207" name="type">
       <Position>13</Position>
-      <Comment>文件类型，0 pdf 1 epub 2 mobi 3 doc 4 txt</Comment>
-      <DataType>int(2)|0</DataType>
+      <Comment>文件类型</Comment>
+      <DataType>varchar(5)|0</DataType>
       <NotNull>1</NotNull>
       <DefaultExpression>&apos;0&apos;</DefaultExpression>
       <ColumnKind>normal</ColumnKind>
     </column>
-    <column id="222" parent="207" name="size">
+    <column id="223" parent="207" name="size">
       <Position>14</Position>
       <Comment>文件大小</Comment>
       <DataType>decimal(5,2)|0</DataType>
-      <NotNull>1</NotNull>
       <DefaultExpression>&apos;0.00&apos;</DefaultExpression>
       <ColumnKind>normal</ColumnKind>
     </column>
-    <index id="223" parent="207" name="url_obj_id">
+    <index id="224" parent="207" name="url_obj_id">
       <ColNames>url_obj_id</ColNames>
       <Unique>1</Unique>
     </index>
-    <key id="224" parent="207" name="PRIMARY">
+    <key id="225" parent="207" name="PRIMARY">
       <NameSurrogate>1</NameSurrogate>
       <ColNames>url_obj_id</ColNames>
       <Primary>1</Primary>
     </key>
-    <key id="225" parent="207" name="url_obj_id">
+    <key id="226" parent="207" name="url_obj_id">
       <ColNames>url_obj_id</ColNames>
       <UnderlyingIndexName>url_obj_id</UnderlyingIndexName>
     </key>
-    <column id="226" parent="208" name="url_obj_id">
+    <column id="227" parent="208" name="url_obj_id">
       <Position>1</Position>
       <Comment>md5加密后的url</Comment>
       <DataType>varchar(100)|0</DataType>
       <NotNull>1</NotNull>
       <ColumnKind>normal</ColumnKind>
     </column>
-    <column id="227" parent="208" name="title">
+    <column id="228" parent="208" name="title">
       <Position>2</Position>
       <Comment>标题</Comment>
       <DataType>varchar(255)|0</DataType>
@@ -960,15 +963,8 @@
       <DefaultExpression>&apos;&apos;</DefaultExpression>
       <ColumnKind>normal</ColumnKind>
     </column>
-    <column id="228" parent="208" name="read_num">
-      <Position>3</Position>
-      <Comment>查看人数</Comment>
-      <DataType>int(10)|0</DataType>
-      <DefaultExpression>&apos;0&apos;</DefaultExpression>
-      <ColumnKind>normal</ColumnKind>
-    </column>
     <column id="229" parent="208" name="upload_time">
-      <Position>4</Position>
+      <Position>3</Position>
       <Comment>上传时间</Comment>
       <DataType>bigint(20)|0</DataType>
       <NotNull>1</NotNull>
@@ -976,7 +972,7 @@
       <ColumnKind>normal</ColumnKind>
     </column>
     <column id="230" parent="208" name="crawl_time">
-      <Position>5</Position>
+      <Position>4</Position>
       <Comment>爬取时间</Comment>
       <DataType>bigint(20)|0</DataType>
       <NotNull>1</NotNull>
@@ -984,7 +980,7 @@
       <ColumnKind>normal</ColumnKind>
     </column>
     <column id="231" parent="208" name="url">
-      <Position>6</Position>
+      <Position>5</Position>
       <Comment>跳转链接</Comment>
       <DataType>varchar(255)|0</DataType>
       <NotNull>1</NotNull>
@@ -992,40 +988,39 @@
       <ColumnKind>normal</ColumnKind>
     </column>
     <column id="232" parent="208" name="source_website">
-      <Position>7</Position>
+      <Position>6</Position>
       <Comment>来源网站</Comment>
       <DataType>varchar(255)|0</DataType>
       <DefaultExpression>&apos;&apos;</DefaultExpression>
       <ColumnKind>normal</ColumnKind>
     </column>
     <column id="233" parent="208" name="type">
-      <Position>8</Position>
+      <Position>7</Position>
       <Comment>文件类型</Comment>
       <DataType>varchar(5)|0</DataType>
       <NotNull>1</NotNull>
       <DefaultExpression>&apos;0&apos;</DefaultExpression>
       <ColumnKind>normal</ColumnKind>
     </column>
-    <column id="234" parent="208" name="size">
-      <Position>9</Position>
-      <Comment>文件大小</Comment>
-      <DataType>varchar(20)|0</DataType>
-      <NotNull>1</NotNull>
-      <DefaultExpression>&apos;0.00&apos;</DefaultExpression>
+    <column id="234" parent="208" name="description">
+      <Position>8</Position>
+      <Comment>资源内容介绍</Comment>
+      <DataType>longtext|0</DataType>
       <ColumnKind>normal</ColumnKind>
     </column>
     <column id="235" parent="208" name="tag">
-      <Position>10</Position>
+      <Position>9</Position>
       <Comment>标签</Comment>
       <DataType>varchar(255)|0</DataType>
       <NotNull>1</NotNull>
       <DefaultExpression>&apos;&apos;</DefaultExpression>
       <ColumnKind>normal</ColumnKind>
     </column>
-    <column id="236" parent="208" name="description">
-      <Position>11</Position>
-      <Comment>资源内容介绍</Comment>
-      <DataType>longtext|0</DataType>
+    <column id="236" parent="208" name="size">
+      <Position>10</Position>
+      <Comment>文件大小</Comment>
+      <DataType>varchar(20)|0</DataType>
+      <DefaultExpression>&apos;0.00&apos;</DefaultExpression>
       <ColumnKind>normal</ColumnKind>
     </column>
     <index id="237" parent="208" name="url_obj_id">
@@ -1038,6 +1033,102 @@
       <Primary>1</Primary>
     </key>
     <key id="239" parent="208" name="url_obj_id">
+      <ColNames>url_obj_id</ColNames>
+      <UnderlyingIndexName>url_obj_id</UnderlyingIndexName>
+    </key>
+    <column id="240" parent="209" name="url_obj_id">
+      <Position>1</Position>
+      <Comment>md5加密后的url</Comment>
+      <DataType>varchar(100)|0</DataType>
+      <NotNull>1</NotNull>
+      <ColumnKind>normal</ColumnKind>
+    </column>
+    <column id="241" parent="209" name="title">
+      <Position>2</Position>
+      <Comment>标题</Comment>
+      <DataType>varchar(255)|0</DataType>
+      <NotNull>1</NotNull>
+      <DefaultExpression>&apos;&apos;</DefaultExpression>
+      <ColumnKind>normal</ColumnKind>
+    </column>
+    <column id="242" parent="209" name="read_num">
+      <Position>3</Position>
+      <Comment>查看人数</Comment>
+      <DataType>int(10)|0</DataType>
+      <DefaultExpression>&apos;0&apos;</DefaultExpression>
+      <ColumnKind>normal</ColumnKind>
+    </column>
+    <column id="243" parent="209" name="upload_time">
+      <Position>4</Position>
+      <Comment>上传时间</Comment>
+      <DataType>bigint(20)|0</DataType>
+      <NotNull>1</NotNull>
+      <DefaultExpression>&apos;0&apos;</DefaultExpression>
+      <ColumnKind>normal</ColumnKind>
+    </column>
+    <column id="244" parent="209" name="crawl_time">
+      <Position>5</Position>
+      <Comment>爬取时间</Comment>
+      <DataType>bigint(20)|0</DataType>
+      <NotNull>1</NotNull>
+      <DefaultExpression>&apos;0&apos;</DefaultExpression>
+      <ColumnKind>normal</ColumnKind>
+    </column>
+    <column id="245" parent="209" name="url">
+      <Position>6</Position>
+      <Comment>跳转链接</Comment>
+      <DataType>varchar(255)|0</DataType>
+      <NotNull>1</NotNull>
+      <DefaultExpression>&apos;&apos;</DefaultExpression>
+      <ColumnKind>normal</ColumnKind>
+    </column>
+    <column id="246" parent="209" name="source_website">
+      <Position>7</Position>
+      <Comment>来源网站</Comment>
+      <DataType>varchar(255)|0</DataType>
+      <DefaultExpression>&apos;&apos;</DefaultExpression>
+      <ColumnKind>normal</ColumnKind>
+    </column>
+    <column id="247" parent="209" name="type">
+      <Position>8</Position>
+      <Comment>文件类型</Comment>
+      <DataType>varchar(5)|0</DataType>
+      <NotNull>1</NotNull>
+      <DefaultExpression>&apos;0&apos;</DefaultExpression>
+      <ColumnKind>normal</ColumnKind>
+    </column>
+    <column id="248" parent="209" name="size">
+      <Position>9</Position>
+      <Comment>文件大小</Comment>
+      <DataType>varchar(20)|0</DataType>
+      <NotNull>1</NotNull>
+      <DefaultExpression>&apos;0.00&apos;</DefaultExpression>
+      <ColumnKind>normal</ColumnKind>
+    </column>
+    <column id="249" parent="209" name="tag">
+      <Position>10</Position>
+      <Comment>标签</Comment>
+      <DataType>varchar(255)|0</DataType>
+      <NotNull>1</NotNull>
+      <DefaultExpression>&apos;&apos;</DefaultExpression>
+      <ColumnKind>normal</ColumnKind>
+    </column>
+    <column id="250" parent="209" name="description">
+      <Position>11</Position>
+      <Comment>资源内容介绍</Comment>
+      <DataType>longtext|0</DataType>
+      <ColumnKind>normal</ColumnKind>
+    </column>
+    <index id="251" parent="209" name="url_obj_id">
+      <ColNames>url_obj_id</ColNames>
+      <Unique>1</Unique>
+    </index>
+    <key id="252" parent="209" name="PRIMARY">
+      <NameSurrogate>1</NameSurrogate>
+      <ColNames>url_obj_id</ColNames>
+      <Primary>1</Primary>
+    </key>
+    <key id="253" parent="209" name="url_obj_id">
       <ColNames>url_obj_id</ColNames>
       <UnderlyingIndexName>url_obj_id</UnderlyingIndexName>
     </key>
