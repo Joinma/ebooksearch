@@ -8,8 +8,6 @@ import datetime
 import scrapy
 from scrapy.loader.processors import MapCompose, TakeFirst, Join
 from scrapy.loader import ItemLoader
-import time
-from decimal import *
 from w3lib.html import remove_tags
 import re
 import time
@@ -180,4 +178,53 @@ class PipipanItem(scrapy.Item):
                       self["url"], self["source_website"], self["type"], self["size"], self["tag"])
             
         return insert_sql, params
-        
+
+
+# 我的小书屋
+class MebookItemLoader(ItemLoader):
+    # 自定义ItemLoader
+    default_output_processor = TakeFirst()
+
+
+class MebookItem(scrapy.Item):
+    url_obj_id = scrapy.Field()
+    title = scrapy.Field()
+    upload_time = scrapy.Field(
+        input_processor = Join(","),
+        # output_processor = MapCompose(get_upload_time)
+    )
+    crawl_time = scrapy.Field()
+    url = scrapy.Field()
+    source_website = scrapy.Field()
+    type = scrapy.Field()
+    description = scrapy.Field()
+    tag = scrapy.Field()
+
+    def get_insert_sql(self):
+
+        insert_sql = """
+            insert into `mebook` (url_obj_id, title, upload_time, crawl_time, url, 
+            source_website, type, description, tag) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s) 
+              ON DUPLICATE KEY UPDATE title=VALUES(title),crawl_time=VALUES(crawl_time), 
+              tag=VALUES(tag), description=VALUES(description)
+        """
+
+        match_obj = re.match(".*?((\d+)年(\d+)月(\d+)日).*", self["upload_time"])
+        if match_obj:
+            date = match_obj.group(1).replace("年", "-").replace("月", "-").replace("日", "")
+            upload_time = time.strptime(date, "%Y-%m-%d")
+            upload_time = round(time.mktime(upload_time) * 1000)
+        else:
+            upload_time = round(time.time() * 1000)
+
+        match_type = re.match(r'.*(》|）|\))([a-zA-Z].*)',self["type"])
+        if match_type:
+            type = match_type.group(2)
+        else:
+            type = "unknown"
+
+        params = (self["url_obj_id"], self["title"], upload_time, self["crawl_time"],
+                  self["url"], self["source_website"], type, self["description"], self["tag"])
+
+        return insert_sql, params
+

@@ -46,7 +46,7 @@ CREATE TABLE IF NOT EXISTS `mebook` (
   `crawl_time` BIGINT NOT NULL DEFAULT 0 COMMENT '爬取时间',
   `url` VARCHAR(255) NOT NULL DEFAULT '' COMMENT '跳转链接',
   `source_website` VARCHAR(255) DEFAULT '' COMMENT '来源网站',
-  `type` VARCHAR(5) NOT NULL DEFAULT 0 COMMENT '文件类型',
+  `type` VARCHAR(255) NOT NULL DEFAULT 0 COMMENT '文件类型',
   `description` LONGTEXT NULL COMMENT '资源内容介绍',
   `tag` VARCHAR(255) NOT NULL DEFAULT'' COMMENT '标签',
   `size` VARCHAR(20) DEFAULT 0.00 COMMENT '文件大小',

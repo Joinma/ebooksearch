@@ -997,7 +997,7 @@
     <column id="233" parent="208" name="type">
       <Position>7</Position>
       <Comment>文件类型</Comment>
-      <DataType>varchar(5)|0</DataType>
+      <DataType>varchar(255)|0</DataType>
       <NotNull>1</NotNull>
       <DefaultExpression>&apos;0&apos;</DefaultExpression>
       <ColumnKind>normal</ColumnKind>
