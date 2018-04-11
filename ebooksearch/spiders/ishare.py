@@ -49,11 +49,10 @@ class IshareSpider(scrapy.Spider):
                     # yield scrapy.Request(url=url, headers=self.headers, callback=self.detail_parse)
 
             # 下一页的url
-            # next_url = response.css(".btn-page::attr(href)").extract()
-            # if next_url:
-            #     next_url = parse.urljoin(response.url, next_url)
-            #     # yield scrapy.Request(url=next_url, headers=self.headers, callback=self.category_parse)
-            #     pass
+            next_url = response.css(".btn-page::attr(href)").extract()
+            if next_url:
+                next_url = parse.urljoin(response.url, next_url)
+                yield scrapy.Request(url=next_url, headers=self.headers, callback=self.category_parse)
 
     def detail_parse(self, response):
         # 资料详情提取

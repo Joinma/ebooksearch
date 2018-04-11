@@ -11,12 +11,18 @@ class PipipanSpider(scrapy.Spider):
     name = 'pipipan'
     allowed_domains = ['edu.pipipan.com']
     start_urls = ['http://edu.pipipan.com/']
+    # start_urls = ['http://edu.pipipan.com/class/2011?pg=7']
+    headers = {
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko)Chrome/63.0.3239.84 Safari/537.36'
+    }
 
     def parse(self, response):
         # 解析分类
         all_category_url = response.css(".sub-nav a::attr(href)").extract()
         all_category_url = [parse.urljoin(response.url, url) for url in all_category_url]
+        print(all_category_url)
         for category_url in all_category_url:
+            print(category_url)
             scrapy.Request(category_url, callback=self.parse_category_detail)
 
     def parse_category_detail(self, response):

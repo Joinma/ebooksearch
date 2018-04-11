@@ -4,7 +4,7 @@
 #
 # See documentation in:
 # https://doc.scrapy.org/en/latest/topics/items.html
-
+import datetime
 import scrapy
 from scrapy.loader.processors import MapCompose, TakeFirst, Join
 from scrapy.loader import ItemLoader
@@ -83,7 +83,17 @@ def format_upload_time(value):
     match_obj5 = re.match(r'\d+-\d+-\d+', value)
     
     if match_obj1:
-        pass
+        upload_time = match_obj1.group(1) * 3600000
+    elif match_obj2:
+        hour = match_obj2.group(2)
+        minute = match_obj2.group(3)
+        today = datetime.date.today()
+        # 0点时间戮
+        today_timestamp = int(time.mktime(today.timetuple()))
+        yestoday_timestamp = today_timestamp - 3600000 * 24
+        upload_time = yestoday_timestamp + hour * 3600000 + minute * 60000
+    elif match_obj4:
+        upload_time = match_obj4.group(1) * 3600000 * 24
     elif match_obj5:
         upload_time = time.strptime(value, "%Y-%m-%d")
         return round(time.mktime(upload_time) * 1000)
@@ -109,7 +119,6 @@ class PipipanItem(scrapy.Item):
     )
     description = scrapy.Field()
 
-
     def get_insert_sql(self):
         insert_sql = """
             insert into `pipipan` (url_obj_id, title, read_num, upload_time, crawl_time, 
@@ -119,3 +128,7 @@ class PipipanItem(scrapy.Item):
               crawl_time=VALUES(crawl_time), tag=values(tag)
         """
 
+        params = (self["url_obj_id"], self["title"], self["read_num"], self["upload_time"], self["crawl_time"],
+                  self["url"], self["source_website"], self["type"], self["size"], self["tag"], self["description"])
+
+        return insert_sql, params
