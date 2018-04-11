@@ -33,6 +33,12 @@ class PipipanSpider(scrapy.Spider):
         for book_detail_url in book_list:
             yield scrapy.Request(book_detail_url, callback=self.parse_book_detail)
 
+        next_url = response.css(".p_redirect::attr(href)").extract()
+        if next_url:
+            # 有下一页，继续跟踪
+            next_url = parse.urljoin(response.url, next_url)
+            yield scrapy.Request(next_url, callback=self.parse_book_list)
+
     def parse_book_detail(self, response):
         if "未找到" in response.text:
             return

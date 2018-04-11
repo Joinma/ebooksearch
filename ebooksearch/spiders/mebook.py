@@ -11,6 +11,9 @@ class MebookSpider(CrawlSpider):
 
     rules = (
         Rule(LinkExtractor(allow=r'Items/'), callback='parse_item', follow=True),
+        Rule(LinkExtractor(allow=r'Items/'), callback='parse_item', follow=True),
+        Rule(LinkExtractor(allow=r'Items/'), callback='parse_item', follow=True),
+        Rule(LinkExtractor(allow=r'Items/'), callback='parse_item', follow=True),
     )
 
     def parse_item(self, response):
