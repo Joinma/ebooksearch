@@ -851,9 +851,9 @@
     <column id="212" parent="207" name="score">
       <Position>4</Position>
       <Comment>评分</Comment>
-      <DataType>int(3)|0</DataType>
+      <DataType>decimal(2,1)|0</DataType>
       <NotNull>1</NotNull>
-      <DefaultExpression>&apos;0&apos;</DefaultExpression>
+      <DefaultExpression>&apos;0.0&apos;</DefaultExpression>
       <ColumnKind>normal</ColumnKind>
     </column>
     <column id="213" parent="207" name="load_num">
