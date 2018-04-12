@@ -1,6 +1,6 @@
 -- 新浪爱问分享资料
-DROP TABLE IF EXISTS `ishare`;
-CREATE TABLE IF NOT EXISTS `ishare`(
+DROP TABLE IF EXISTS `t_ishare`;
+CREATE TABLE IF NOT EXISTS `t_ishare`(
   `url_obj_id` VARCHAR(100) NOT NULL UNIQUE COMMENT 'md5加密后的url',
   `title` VARCHAR(255) NOT NULL DEFAULT '' COMMENT '标题',
   `upload_people` VARCHAR(255) DEFAULT '' COMMENT '上传者',
@@ -20,8 +20,8 @@ CREATE TABLE IF NOT EXISTS `ishare`(
 )ENGINE = InnoDB CHARACTER SET = utf8 COMMENT '新浪爱问分享资料';
 
 -- 城通网盘
-DROP TABLE IF EXISTS `pipipan`;
-CREATE TABLE IF NOT EXISTS `pipipan` (
+DROP TABLE IF EXISTS `t_pipipan`;
+CREATE TABLE IF NOT EXISTS `t_pipipan` (
   `url_obj_id` VARCHAR(100) NOT NULL UNIQUE COMMENT 'md5加密后的url',
   `title` VARCHAR(255) NOT NULL DEFAULT '' COMMENT '标题',
   `read_num` INT(10) DEFAULT 0 COMMENT '查看人数',
@@ -38,8 +38,8 @@ CREATE TABLE IF NOT EXISTS `pipipan` (
 )ENGINE = InnoDB CHARACTER SET = utf8 COMMENT '城通网盘';
 
 -- 我的小书屋
-DROP TABLE IF EXISTS `mebook`;
-CREATE TABLE IF NOT EXISTS `mebook` (
+DROP TABLE IF EXISTS `t_mebook`;
+CREATE TABLE IF NOT EXISTS `t_mebook` (
   `url_obj_id` VARCHAR(100) NOT NULL UNIQUE COMMENT 'md5加密后的url',
   `title` VARCHAR(255) NOT NULL DEFAULT '' COMMENT '标题',
   `upload_time` BIGINT NOT NULL DEFAULT 0 COMMENT '上传时间',
@@ -55,8 +55,8 @@ CREATE TABLE IF NOT EXISTS `mebook` (
 )ENGINE = InnoDB CHARACTER SET = utf8 COMMENT '我的小书屋';
 
 -- 西刺动态代理ip
-DROP TABLE IF EXISTS `xici_ip`;
-CREATE TABLE IF NOT EXISTS `xici_ip` (
+DROP TABLE IF EXISTS `t_xici_ip`;
+CREATE TABLE IF NOT EXISTS `t_xici_ip` (
   `id` BIGINT UNSIGNED AUTO_INCREMENT NOT NULL  COMMENT'表主键',
   `ip` VARCHAR(50) NOT NULL UNIQUE COMMENT '访问ip',
   `port` VARCHAR(10) NOT NULL COMMENT '端口号',
@@ -67,7 +67,7 @@ CREATE TABLE IF NOT EXISTS `xici_ip` (
   PRIMARY KEY (`id`)
 )ENGINE = InnoDB CHARACTER SET = utf8 COMMENT '西刺网代理ip';
 
-insert  into `xici_ip`(`id`,`ip`,`port`,`type`,`speed`,`live_time`) values
+insert  into `t_xici_ip`(`id`,`ip`,`port`,`type`,`speed`,`live_time`) values
 (1,'223.241.78.223','8010','https',2.156,11232000000),
 (3,'49.65.161.169','18118','https',0.227,7200000),
 (6,'60.177.227.207','18118','http',0.363,60000),

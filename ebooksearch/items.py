@@ -47,7 +47,7 @@ class IshareItem(scrapy.Item):
 
     def get_insert_sql(self):
         insert_sql = """
-            insert into `ishare` (url_obj_id, title, upload_people, score, load_num, read_num, comment_num, collect_num, upload_time, crawl_time, url, source_website, type) 
+            insert into `t_ishare` (url_obj_id, title, upload_people, score, load_num, read_num, comment_num, collect_num, upload_time, crawl_time, url, source_website, type) 
               VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s) ON DUPLICATE KEY UPDATE title=VALUES(title), load_num=VALUES(load_num),
               score=VALUES(score),read_num=VALUES(read_num),comment_num=VALUES(comment_num),collect_num=VALUES(collect_num), crawl_time=VALUES(crawl_time),
               type=VALUES(type)
@@ -156,7 +156,7 @@ class PipipanItem(scrapy.Item):
         if description:
             print("description: " + description)
             insert_sql = """
-                insert into `pipipan` (url_obj_id, title, read_num, upload_time, crawl_time, 
+                insert into `t_pipipan` (url_obj_id, title, read_num, upload_time, crawl_time, 
                 url, source_website, type, size, tag, description) 
                   VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s) 
                   ON DUPLICATE KEY UPDATE title=VALUES(title),read_num=VALUES(read_num),
@@ -167,12 +167,12 @@ class PipipanItem(scrapy.Item):
                       self["url"], self["source_website"], self["type"], self["size"], self["tag"], self["description"])
         else:
             insert_sql = """
-                            insert into `pipipan` (url_obj_id, title, read_num, upload_time, crawl_time, 
-                            url, source_website, type, size, tag) 
-                              VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s) 
-                              ON DUPLICATE KEY UPDATE title=VALUES(title),read_num=VALUES(read_num),
-                              crawl_time=VALUES(crawl_time), tag=values(tag)
-                        """
+                insert into `t_pipipan` (url_obj_id, title, read_num, upload_time, crawl_time, 
+                url, source_website, type, size, tag) 
+                  VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s) 
+                  ON DUPLICATE KEY UPDATE title=VALUES(title),read_num=VALUES(read_num),
+                  crawl_time=VALUES(crawl_time), tag=values(tag)
+            """
 
             params = (self["url_obj_id"], self["title"], self["read_num"], self["upload_time"], self["crawl_time"],
                       self["url"], self["source_website"], self["type"], self["size"], self["tag"])
@@ -203,7 +203,7 @@ class MebookItem(scrapy.Item):
     def get_insert_sql(self):
 
         insert_sql = """
-            insert into `mebook` (url_obj_id, title, upload_time, crawl_time, url, 
+            insert into `t_mebook` (url_obj_id, title, upload_time, crawl_time, url, 
             source_website, type, description, tag) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s) 
               ON DUPLICATE KEY UPDATE title=VALUES(title),crawl_time=VALUES(crawl_time), 
               tag=VALUES(tag), description=VALUES(description)
