@@ -11,15 +11,37 @@ from scrapy.loader import ItemLoader
 from w3lib.html import remove_tags
 import re
 import time
-from decimal import *
 
-from ebooksearch.utils.common import get_md5
+from ebooksearch.models.es import IshareType
 
+from elasticsearch_dsl.connections import connections
+
+es = connections.create_connection(IshareType._doc_type.using)
 
 class EbooksearchItem(scrapy.Item):
     # define the fields for your item here like:
     # name = scrapy.Field()
     pass
+
+
+def gen_suggests(index, info_tuple):
+    # 根据字符串生成搜索建议数组
+    used_word = set()
+    suggests = []
+
+    for text, weight in info_tuple:
+        if text:
+            # 调用es的analyze接口分析字符串
+            words = es.indices.analyze(index=index, analyzer="ik_max_word", params={'filter':['lowercase']}, body=text)
+            anylyzed_words = set([r["token"] for r in words["tokens"] if len(r["token"]) > 1])
+            new_words = anylyzed_words - used_word
+        else:
+            new_words = set()
+
+        if new_words:
+            suggests.append({'input':list(new_words),'weight':weight})
+
+    return suggests
 
 
 class IshareItemLoader(ItemLoader):
@@ -74,6 +96,28 @@ class IshareItem(scrapy.Item):
                   type)
 
         return insert_sql, params
+
+    def save_to_es(self):
+        ishare = IshareType()
+        ishare.meta.id = self["url_obj_id"]
+        ishare.title = self["title"]
+        ishare.url = self["url"]
+        ishare.load_num = self["load_num"]
+        ishare.read_num = self["read_num"]
+        ishare.type = self["type"]
+        ishare.source_website = self["source_website"]
+
+        crawl_date = time.strftime("%Y-%m-%d", time.localtime(self["crawl_time"] / 1000))
+        # upload_date = time.strftime("%Y-%m-%d", time.localtime(self["upload_time"] / 1000))
+
+        # upload_time = time.strptime(self["upload_time"], "%Y-%m-%d")
+
+        ishare.crawl_time = crawl_date
+        ishare.upload_time = self["upload_time"]
+        ishare.suggest = gen_suggests(IshareType._doc_type.index, ((ishare.title, 10), (ishare.type, 7)))
+
+        ishare.save()
+        return
 
 
 # 城通网盘

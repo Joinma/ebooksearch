@@ -69,7 +69,8 @@ DOWNLOADER_MIDDLEWARES = {
 # Configure item pipelines
 # See https://doc.scrapy.org/en/latest/topics/item-pipeline.html
 ITEM_PIPELINES = {
-   'ebooksearch.pipelines.MysqlTwistedPipeline': 300,
+   # 'ebooksearch.pipelines.MysqlTwistedPipeline': 300,
+   'ebooksearch.pipelines.ElasticsearchPipeline': 200,
 }
 
 # Enable and configure the AutoThrottle extension (disabled by default)
