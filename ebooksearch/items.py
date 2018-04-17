@@ -12,7 +12,7 @@ from w3lib.html import remove_tags
 import re
 import time
 
-from ebooksearch.models.es import IshareType
+from ebooksearch.models.es import IshareType, PipipaneType, MebookType
 
 from elasticsearch_dsl.connections import connections
 
@@ -223,6 +223,26 @@ class PipipanItem(scrapy.Item):
             
         return insert_sql, params
 
+    def save_to_es(self):
+        pipipan = PipipaneType()
+        pipipan.meta.id = self["url_obj_id"]
+        pipipan.title = self["title"]
+        pipipan.url = self["url"]
+        pipipan.read_num = self["read_num"]
+        pipipan.type = self["type"]
+        pipipan.source_website = self["source_website"]
+
+        pipipan.tag = self["tag"]
+        pipipan.description = self["description"]
+
+        crawl_date = time.strftime("%Y-%m-%d", time.localtime(self["crawl_time"] / 1000))
+        pipipan.crawl_time = crawl_date
+        pipipan.upload_time = time.strftime("%Y-%m-%d", time.localtime(self["upload_time"] / 1000))
+        pipipan.suggest = gen_suggests(PipipaneType._doc_type.index, ((pipipan.title, 10), (pipipan.tag, 7)))
+
+        pipipan.save()
+        return
+
 
 # 我的小书屋
 class MebookItemLoader(ItemLoader):
@@ -271,4 +291,38 @@ class MebookItem(scrapy.Item):
                   self["url"], self["source_website"], type, self["description"], self["tag"])
 
         return insert_sql, params
+
+    def save_to_es(self):
+
+        match_obj = re.match(".*?((\d+)年(\d+)月(\d+)日).*", self["upload_time"])
+        if match_obj:
+            date = match_obj.group(1).replace("年", "-").replace("月", "-").replace("日", "")
+            upload_time = time.strptime(date, "%Y-%m-%d")
+            upload_time = round(time.mktime(upload_time) * 1000)
+        else:
+            upload_time = round(time.time() * 1000)
+
+        match_type = re.match(r'.*(》|）|\))([a-zA-Z].*)', self["type"])
+        if match_type:
+            type = match_type.group(2)
+        else:
+            type = "unknown"
+
+        mebook = MebookType()
+        mebook.meta.id = self["url_obj_id"]
+        mebook.title = self["title"]
+        mebook.url = self["url"]
+        mebook.type = type
+        mebook.source_website = self["source_website"]
+
+        mebook.tag = self["tag"]
+        mebook.description = self["description"]
+
+        crawl_date = time.strftime("%Y-%m-%d", time.localtime(self["crawl_time"] / 1000))
+        mebook.crawl_time = crawl_date
+        mebook.upload_time = upload_time
+        mebook.suggest = gen_suggests(PipipaneType._doc_type.index, ((mebook.title, 10), (mebook.tag, 7)))
+
+        mebook.save()
+        return
 
