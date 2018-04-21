@@ -11,6 +11,7 @@ class PipipanSpider(scrapy.Spider):
     name = 'pipipan'
     allowed_domains = ['edu.pipipan.com']
     start_urls = ['http://edu.pipipan.com/']
+    # start_urls = ['http://edu.pipipan.com/info/rSP601673']
 
     def parse(self, response):
         # 解析分类
@@ -18,6 +19,7 @@ class PipipanSpider(scrapy.Spider):
         all_category_url = [parse.urljoin(response.url, url) for url in all_category_url]
         for category_url in all_category_url:
             yield scrapy.Request(url=category_url, callback=self.parse_category_detail)
+
 
     def parse_category_detail(self, response):
         # 分类详情

@@ -30,9 +30,9 @@ class IshareSpider(scrapy.Spider):
                 # 如果匹配到url，进行详情页提取
                 yield scrapy.Request(url=url, callback=self.category_parse)
             else:
-                pass
+                # pass
                 #匹配不到，继续跟踪
-                # yield scrapy.Request(url=url, headers=self.headers, callback=self.parse)
+                yield scrapy.Request(url=url, headers=self.headers, callback=self.parse)
 
     def category_parse(self, response):
         # 没有这个轮播图的才是真正要爬取的分类页面

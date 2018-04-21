@@ -128,26 +128,37 @@ class PipipanItemLoader(ItemLoader):
 
 def format_upload_time(value):
     # 处理上传时间
-    match_obj2 = re.match(r'(\d+)小时.*', value)
-    match_obj1 = re.match(r'(^昨天((\d+):(\d+)))', value)
+    match_obj1 = re.match(r'(\d+)小时.*', value)
+    match_obj2 = re.match(r'(^昨天((\d+):(\d+)))', value)
     match_obj3 = re.match(r'(^前天((\d+):(\d+)))', value)
     match_obj4 = re.match(r'(\d+)天前.*', value)
     match_obj5 = re.match(r'\d+-\d+-\d+', value)
     
     if match_obj1:
-        upload_time = match_obj1.group(1) * 3600000
+        now_timestamp = round(time.time())
+        upload_time = now_timestamp - match_obj1.group(1) * 3600000
         return upload_time
     elif match_obj2:
-        hour = match_obj2.group(2)
-        minute = match_obj2.group(3)
+        hour = int(match_obj2.group(3))
+        minute = int(match_obj2.group(4))
         today = datetime.date.today()
         # 0点时间戮
         today_timestamp = int(time.mktime(today.timetuple()))
         yestoday_timestamp = today_timestamp - 3600000 * 24
         upload_time = yestoday_timestamp + hour * 3600000 + minute * 60000
         return upload_time
+    elif match_obj3:
+        hour = int(match_obj2.group(3))
+        minute = int(match_obj2.group(4))
+        today = datetime.date.today()
+        # 0点时间戮
+        today_timestamp = int(time.mktime(today.timetuple()))
+        before_yestoday_timestamp = today_timestamp - 3600000 * 24 * 2
+        upload_time = before_yestoday_timestamp + hour * 3600000 + minute * 60000
+        return upload_time
     elif match_obj4:
-        upload_time = match_obj4.group(1) * 3600000 * 24
+        now_timestamp = round(time.time())
+        upload_time = now_timestamp - match_obj4.group(1) * 3600000 * 24
         return upload_time
     elif match_obj5:
         upload_time = time.strptime(value, "%Y-%m-%d")
