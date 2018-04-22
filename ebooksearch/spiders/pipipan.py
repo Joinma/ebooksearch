@@ -11,7 +11,6 @@ class PipipanSpider(scrapy.Spider):
     name = 'pipipan'
     allowed_domains = ['edu.pipipan.com']
     start_urls = ['http://edu.pipipan.com/']
-    # start_urls = ['http://edu.pipipan.com/info/rSP601673']
 
     def parse(self, response):
         # 解析分类
